@@ -338,19 +338,15 @@ Input("dummy","data")
 def parse_df(dummy):
 	# attempts to find a pre-computed file.
 	try:
-		print("start parsing")
 		if not path.exists("data/allele_freq_processed.tsv"):
 			raise Exception
-		print("read")
 		ww_df = datatable.fread("data/variant_freq_processed.tsv", sep="\t").to_pandas()
-		print("index")
 		ww_df.index = pd.to_datetime(ww_df['sample_date'])
 		earliest_date = ww_df.index[0]
 		latest_date = ww_df.index[-1]
 		past_date = latest_date - relativedelta(months=1)
 		
 		all_ww = list(ww_df["LocationID"].unique())
-		print("returning")
 		return ww_df.to_dict("records"), past_date, latest_date, earliest_date, None, None, all_ww
 		
 	# if no precomputed file is found, the program attempts to parse raw data and generate the pre-computed file.
@@ -403,7 +399,7 @@ def parse_df(dummy):
 			
 			#df_frq[["gen_feature", "aa_change"]] = df_frq["mut"].str.split(":", 1, expand=True)
 			df_frq = df_frq[["sample_id","mut","kw","allele_freq","LocationID","LocationName","position","ann_effect","ann_aa", "gen_feature", "depth"]]
-			df_frq.to_csv("allele_freq_processed.tsv", sep = "\t", index=False)
+			df_frq.to_csv("data/allele_freq_processed.tsv", sep = "\t", index=False)
 		all_ww = list(master["LocationID"].unique())
 		return master.to_dict("records"), past_date, latest_date, earliest_date, None, None, all_ww
 
@@ -721,17 +717,13 @@ def update_map(show, variant, plant, mutation, data,static_dynamic, radioitems, 
 		
 		# *** display mode: most frequent variant (timelapse)
 		if show == "timelapse" and variant == "all" and radioitems == "variant":
-			print("start")
 			df_temp = pd.DataFrame()
-			print("group loc")
 			for index, data in df.groupby(by="LocationID"):
 				data = data.sort_values(by="value", ascending = False)
 				
 				data = data.drop_duplicates('kw', keep='first')
 				df_temp = pd.concat([df_temp, data])
-			print("sort vals")
 			df = df_temp.sort_values(by="sample_date")
-			print("add not sampled")
 			if plant == "all":
 				for index, data in df.groupby(by="kw"):
 					for plant in all_ww:
@@ -741,7 +733,6 @@ def update_map(show, variant, plant, mutation, data,static_dynamic, radioitems, 
 								"kw":index,
 								'variant' : "not sampled",
 							}, ignore_index=True)
-			print("add missing cath")
 			catg = df['variant'].unique()
 			dts = df['kw'].unique()
 			for tf in dts:
@@ -754,7 +745,6 @@ def update_map(show, variant, plant, mutation, data,static_dynamic, radioitems, 
 			
 			if len(df)==0:
 				raise Exception
-			print("make fig")	
 			fig=px.choropleth_mapbox(df,
 				geojson=plants_simple,
 				featureidkey='properties.uwwcode',
