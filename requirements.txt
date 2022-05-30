@@ -1,0 +1,16 @@
+###### Requirements without Version Specifiers ######
+dash
+dash_auth
+dash_core_components
+dash_html_components
+dash_table
+pandas
+plotly
+dash_trich_components
+datetime
+python-dateutil
+python-time
+datatable
+
+###### Requirements with Version Specifiers ######
+dash-bootstrap-components < 1
