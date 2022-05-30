@@ -1,0 +1,28 @@
+/* assets/style.css */
+._dash-loading {
+  content: 'Loading datasets...';
+  margin: auto;
+  color: black;
+  width: 0;
+  height: 0;
+  text-align: center;
+  margin-top: 20rem;
+}
+
+
+._dash-loading::after {
+  content: '';
+  display: inline-block;
+  width: 3rem;
+  height: 3rem;
+  color: black;
+  vertical-align: text-bottom;
+  border: 0.25em solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  -webkit-animation: spinner-border 0.75s linear infinite;
+  animation: spinner-border 0.75s linear infinite;
+  margin-top: 2rem;
+}
+
+

@@ -1,0 +1,24 @@
+Input data format
+
+variant data
+tab-delimited
+header:
+variant (string) name of the variant (e.g. BA.1)
+LocationID (string) ID of the sampling area
+LocationName (string) plain text name of the sampling area
+sample_id (string) ID of the sample
+sample_date (string, YYYY-MM-DD) sampling date
+value (float between 0 and 1) frequency of detected variant in the sample
+
+allele data
+tab-delimited
+header:
+Sample_ID (string) must correspond to the Sample_ID in the variant frequency file
+position (integer) position in the genome
+chrom (string) genomic feature ID (reference seq ID)
+ref (string) reference allele
+alt (string) alternative allele
+ann_effect (["missense_variant","synonymous variant"]) effect of the mutation
+ann_aa (string) amino acid change caused by the mutation
+allele_freq (float between 0 and 1) frequency of the allele in the sample
+depth (integer) optional; depth of sequencing at the position of the allele
