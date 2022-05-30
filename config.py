@@ -36,7 +36,7 @@ port = 8050 # integer
 """
 set to True if you want to perform debugging. Do not use in production.
 """
-debug = True # boolean
+debug = False # boolean
 
 """
 geo json file with sampling areas
@@ -65,7 +65,7 @@ zoom = 6 # integer
 file with information about the sampling areas
 
 """
-sampling_areas = "sewage_plants.tsv"
+sampling_areas = "sampling_locations.tsv"
 
 logo = "assets/cemm_banner.png" # path to img
 logo_link = "https://cemm.at" # link
