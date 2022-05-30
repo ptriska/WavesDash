@@ -25,7 +25,6 @@ import calendar
 from lollipop import get_lollipop
 import config
 
-#tla_Wo8zeD2roIPQmOIUywrVPWHXUwC5jXvVP4vvJ5HYxe4kbEEnXv2UCnVd5Rvd3UlJZ5
 
 
 """
@@ -40,7 +39,7 @@ Please cite
 
 
 """
-if the password file is present, the authentication will be required
+if the password file is present and use_password is True, the authentication will be required
 """
 
 if config.use_pwd == True:
