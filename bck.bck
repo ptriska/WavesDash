@@ -53,8 +53,8 @@ if config.use_pwd == True:
 	except:
 		pass
 
-dash_app = dash.Dash(suppress_callback_exceptions = True, external_stylesheets=[dbc.themes.YETI, 'https://use.fontawesome.com/releases/v5.8.1/css/all.css'])
-dash_app.title= config.app_title
+app = dash.Dash(suppress_callback_exceptions = True, external_stylesheets=[dbc.themes.YETI, 'https://use.fontawesome.com/releases/v5.8.1/css/all.css'])
+app.title= config.app_title
 
 
 """
@@ -220,7 +220,7 @@ pie_col = dbc.Col([
 """
 General app layout
 """
-dash_app.layout = html.Div(
+app.layout = html.Div(
 
 	[
 		# store divides keep chunks of data ready within the user's browser
@@ -326,7 +326,7 @@ dash_app.layout = html.Div(
 """
 callback: parse data
 """
-@dash_app.callback(
+@app.callback(
 Output("parsed_data","data"),
 Output("date","start_date"),
 Output("date","end_date"),
@@ -407,7 +407,7 @@ def parse_df(dummy):
 """
 callback: creates a subset of data based on selected dates
 """
-@dash_app.callback(
+@app.callback(
 Output("dataframe","data"),
 Input("parsed_data","data"),
 Input("btn","n_clicks"),
@@ -424,7 +424,7 @@ def process_df(data, btn, start, end):
 """
 callback: fill the forms in the filtering divide with options based on parsed data
 """
-@dash_app.callback(
+@app.callback(
 Output("variant","options"),
 Output("plants","options"),
 #Output("mutation","options"),
@@ -444,7 +444,7 @@ def options(data):
 """
 callback: fill the forms in the filtering divide with options based on parsed data
 """
-@dash_app.callback(
+@app.callback(
 Output("features","options"),
 Output("features","value"),
 Input("dummy","data"),
@@ -462,7 +462,7 @@ def feature_options(data):
 """
 callback: fill the forms in the filtering divide with options based on parsed data
 """
-@dash_app.callback(
+@app.callback(
 Output("mutation","options"),
 Output("mutation","value"),
 Input("features","value"),
@@ -484,7 +484,7 @@ The map can provide several different views:
 + cathegorical map showing the most common variant for a given sampling area
 + timelapse map
 """
-@dash_app.callback(
+@app.callback(
 Output("choropleth1_div","children"),
 Output("close","children"),
 Output("modal_loading_div","children"),
@@ -895,7 +895,7 @@ def update_map(show, variant, plant, mutation, data,static_dynamic, radioitems, 
 """
 callback: toggle the modal window 1
 """
-@dash_app.callback(
+@app.callback(
 	Output("modal", "is_open"),
 	[Input("open", "n_clicks"), Input("close", "n_clicks")],
 	[State("modal", "is_open")],
@@ -908,7 +908,7 @@ def toggle_modal(n1, n2, is_open):
 """
 callback: toggle the modal window 2
 """
-@dash_app.callback(
+@app.callback(
 	Output("bigwin_modal", "is_open"),
 	[Input("bigwin", "n_clicks"), Input("close_bigwin", "n_clicks")],
 	[State("bigwin_modal", "is_open")],
@@ -921,7 +921,7 @@ def toggle_modal(n1, n2, is_open):
 """
 callback: generate the stacked plot with the sampling region information
 """
-@dash_app.callback(
+@app.callback(
 Output("stacked_div","children"),
 Output("town","children"),
 Output("state","children"),
@@ -985,7 +985,7 @@ def update_variant_pie(clickData,plant_name, data):
 """
 callback: toggle enable/disable filter input field
 """
-@dash_app.callback(Output("variant","disabled"), Output("mutation","disabled"), Output("features","disabled"), Input("radioitems","value"))
+@app.callback(Output("variant","disabled"), Output("mutation","disabled"), Output("features","disabled"), Input("radioitems","value"))
 def toggle_var_mut(value):
 	if value == "mutation":
 		return True, False, False
@@ -996,7 +996,7 @@ def toggle_var_mut(value):
 """
 callback: generates the lollipop plot with frequency of mutations
 """
-@dash_app.callback(Output("needle_div","children"), Output("bigcol2","children"), Input("stackbar","clickData"), State("current_plant","data"),  State("plant_readable","data"))
+@app.callback(Output("needle_div","children"), Output("bigcol2","children"), Input("stackbar","clickData"), State("current_plant","data"),  State("plant_readable","data"))
 def show_freq(clickdata, plant_name, plant_readable):
 
 	df = datatable.fread("data/allele_freq_processed.tsv", sep = "\t").to_pandas()
@@ -1014,7 +1014,7 @@ def show_freq(clickdata, plant_name, plant_readable):
 """
 callback: expand/collapse sampling region info (eg. water treatment plant catchment area)
 """
-@dash_app.callback(
+@app.callback(
 	Output("plant_info_collapse", "is_open"),
 	Output("plant_btn", "children"),
 	[Input("plant_btn", "n_clicks")],
@@ -1033,7 +1033,7 @@ def toggle_plant_collapse(n, is_open):
 """
 callback: expand/collapse advanced filter options
 """
-@dash_app.callback(
+@app.callback(
 	Output("collapse", "is_open"),
 	Output("collapse_btn", "children"),
 	[Input("collapse_btn", "n_clicks")],
@@ -1053,7 +1053,7 @@ def toggle_collapse(n, is_open):
 """
 callback: expand/collapse choropleth map
 """
-@dash_app.callback(Output("map_col","width"), Output("pie_col","width"),Output("pie_div","style"),Output("toggle","children"), Input("toggle","n_clicks"), State("map_col","width"))
+@app.callback(Output("map_col","width"), Output("pie_col","width"),Output("pie_div","style"),Output("toggle","children"), Input("toggle","n_clicks"), State("map_col","width"))
 def toggle(i, w):
 	if w == 6:
 		return 10,0, {"display":"none"}, "⯬  Collapse map"
@@ -1066,4 +1066,4 @@ def toggle(i, w):
 
 
 if __name__ == "__main__":
-	dash_app.run_server(debug=config.debug,dev_tools_ui=config.debug, dev_tools_props_check=config.debug)
+	app.run_server(debug=config.debug,dev_tools_ui=config.debug, dev_tools_props_check=config.debug, port = config.port, host='0.0.0.0')
