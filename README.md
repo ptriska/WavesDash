@@ -13,6 +13,11 @@ The software is written in python 3.8 and the web server runs on Plotly Dash.
 + python app.py
 + open browser at localhost:8050
 
+## Example
+The application was used to produce interactive supplementary data for the recent paper by Amman et al.:
+http://www.sarscov2-austria.org/cemm/austrian-sars-cov-2-ww-dashboard/
+![Layout of the application](assets/Figure2.png)
+
 ## Customization of the app
 + customize the config.py
 + supply own data files (example data files are in data/)
