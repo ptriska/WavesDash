@@ -54,6 +54,7 @@ if config.use_pwd == True:
 		pass
 
 dash_app = dash.Dash(suppress_callback_exceptions = True, external_stylesheets=[dbc.themes.YETI, 'https://use.fontawesome.com/releases/v5.8.1/css/all.css'])
+app = dash_app.server
 dash_app.title= config.app_title
 
 
