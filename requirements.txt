@@ -11,6 +11,6 @@ datetime
 python-dateutil
 python-time
 datatable
-
+flask
 ###### Requirements with Version Specifiers ######
 dash-bootstrap-components < 1

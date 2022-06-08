@@ -27,11 +27,20 @@ The software is written in python 3.8 and the web server runs on Plotly Dash.
 synopsis_header = "Synopsis" # string
 
 
+"""
+set to True if deploying to Azure App Services.
+Will ommit port and host definition.
+"""
+azure = False
 
 """
 set port on which the application will be deployed
 """
 port = 8050 # integer
+
+"""
+"""
+host = "0.0.0.0" # string
 
 """
 set to True if you want to perform debugging. Do not use in production.

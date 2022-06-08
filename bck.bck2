@@ -24,7 +24,7 @@ from os import path
 import calendar
 from lollipop import get_lollipop
 import config
-import flask
+
 
 
 """
@@ -53,8 +53,7 @@ if config.use_pwd == True:
 	except:
 		pass
 
-server = flask.Flask(__name__) # define flask app.server
-dash_app = dash.Dash(__name__, server = server, suppress_callback_exceptions = True, external_stylesheets=[dbc.themes.YETI, 'https://use.fontawesome.com/releases/v5.8.1/css/all.css'])
+dash_app = dash.Dash(__name__, suppress_callback_exceptions = True, external_stylesheets=[dbc.themes.YETI, 'https://use.fontawesome.com/releases/v5.8.1/css/all.css'])
 app = dash_app.server
 dash_app.title= config.app_title
 
@@ -1068,4 +1067,7 @@ def toggle(i, w):
 
 
 if __name__ == "__main__":
-	dash_app.run_server(debug=config.debug,dev_tools_ui=config.debug, dev_tools_props_check=config.debug)
+	if config.azure == True:
+		dash_app.run_server(debug=config.debug,dev_tools_ui=config.debug, dev_tools_props_check=config.debug)
+	else:
+		dash_app.run_server(debug=config.debug,dev_tools_ui=config.debug, dev_tools_props_check=config.debug, host = config.host, port = config.port)

@@ -1,4 +1,5 @@
 FROM ubuntu:20.04
+MAINTAINER Petr Triska "triskapet@gmail.com"
 RUN apt-get update
 RUN apt-get install python3.6
 RUN apt-get -y install python3-pip
@@ -17,3 +18,8 @@ RUN pip3 install python-dateutil
 RUN pip3 install python-time
 RUN pip3 install pip --upgrade
 RUN pip3 install datatable
+RUN pip3 install flask
+RUN pip3 install gunicorn
+RUN git clone https://github.com/ptriska/WavesDash /home/WavesDash/
+WORKDIR /home/WavesDash/
+#CMD gunicorn app:app.server -b :8050
