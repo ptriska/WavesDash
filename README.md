@@ -16,9 +16,9 @@ The software is written in python 3.8 and the web server runs on Plotly Dash.
 ## Production deployment with Docker
 #### Using image from Docker hub
 + docker pull wasa000/waves
-+ docker run -p 8050:8050 wasa000/waves
++ docker run -p [your port]:8050 wasa000/waves
 #### Provide own config file and data
-+docker run -p 8050:8050 --mount type=bind,source=/[path to your config file at local machine]/config.py,target=/home/WavesDash/config.py -v [path to the data folder]/data/:/home/WavesDash/data/ wasa000/waves
++ docker run -p [your port]:8050 --mount type=bind,source=/[path to your config file at local machine]/config.py,target=/home/WavesDash/config.py -v [path to the data folder]/data/:/home/WavesDash/data/ wasa000/waves
 
 ## Example
 Demo verison of the application:
