@@ -13,9 +13,16 @@ The software is written in python 3.8 and the web server runs on Plotly Dash.
 + python app.py
 + open browser at localhost:8050
 
+## Production deployment with Docker
+#### Using image from Docker hub
++ docker pull wasa000/waves
++ docker run -p 8050:8050 wasa000/waves
+#### Provide own config file and data
++docker run -p 8050:8050 --mount type=bind,source=/[path to your config file at local machine]/config.py,target=/home/WavesDash/config.py -v [path to the data folder]/data/:/home/WavesDash/data/ wasa000/waves
+
 ## Example
-The application was used to produce interactive supplementary data for the recent paper by Amman et al.:
-http://www.sarscov2-austria.org/cemm/austrian-sars-cov-2-ww-dashboard/
+Demo verison of the application:
+https://wavesdashboard.azurewebsites.net/
 ![Layout of the application](assets/Figure2.png)
 
 ## Customization of the app

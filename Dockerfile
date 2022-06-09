@@ -20,6 +20,7 @@ RUN pip3 install pip --upgrade
 RUN pip3 install datatable
 RUN pip3 install flask
 RUN pip3 install gunicorn
+ADD "https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h" skipcache
 RUN git clone https://github.com/ptriska/WavesDash /home/WavesDash/
 WORKDIR /home/WavesDash/
-#CMD gunicorn app:app.server -b :8050
+CMD gunicorn app:server -b :8050
