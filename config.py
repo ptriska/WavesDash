@@ -28,6 +28,30 @@ synopsis_header = "Synopsis" # string
 
 
 """
+Markup styled string with information displayed under Author information
+"""
+authors_text = """
+This software was produced by Petr Triska, Fabian Amman, Lukas Endler and Andreas Bergthaler.
+For questions regarding the publication, please contact prof. Andreas Bergthaler (andreas.bergthaler{at}meduniwien.ac.at)
+For questions regarding the code, please contact Petr Triska (triskapet@gmail.com).
+
+""" # string
+
+authors_header = "Authors & Contact" # string
+
+"""
+Markup styled string with information displayed under Data Sources
+"""
+data_sources_text = """
+All data used in this demo version of WAVES application are a sample from the dataset published in:
+Amman, F., Markt, R., Endler, L. et al. Viral variant-resolved wastewater surveillance of SARS-CoV-2 at national scale. Nat Biotechnol (2022). https://doi.org/10.1038/s41587-022-01387-y
+""" # string
+
+data_sources_header = "Data sources" # string
+
+
+
+"""
 set to True if deploying to Azure App Services.
 Will ommit port and host definition.
 """
@@ -45,7 +69,7 @@ host = "0.0.0.0" # string
 """
 set to True if you want to perform debugging. Do not use in production.
 """
-debug = False # boolean
+debug = True # boolean
 
 """
 geo json file with sampling areas

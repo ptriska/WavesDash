@@ -86,6 +86,9 @@ plants_names_dict = df_plants_names.to_dict("index")
 Markup styled string with information displayed at the start up of the application
 """
 synopsis_text = config.synopsis_text
+data_source_text = config.data_sources_text
+authors_text = config.authors_text
+
 
 def get_week(year, calendar_week):
 	monday = datetime.datetime.strptime(f'{year}-{calendar_week}-1', "%Y-%W-%w").date()
@@ -96,7 +99,7 @@ def get_week(year, calendar_week):
 *** APP layout
 """
 """
-layout of the intro modal window
+layout of the intro modal window (synopsis)
 """
 modal = dbc.Modal(
 			  [
@@ -108,6 +111,39 @@ modal = dbc.Modal(
 				]),
 			],
 			id="modal",
+			is_open=True,
+			size = "xl"
+		),
+		
+
+"""
+layout of the intro modal window (authors)
+"""
+modal_authors = dbc.Modal(
+			  [
+				dbc.ModalHeader(config.authors_header),
+				dbc.ModalBody(dcc.Markdown(config.authors_text)),
+				dbc.ModalFooter([
+					dbc.Spinner(dbc.Button("Close", id="close_authors", n_clicks=0)),
+				]),
+			],
+			id="modal_authors",
+			is_open=True,
+			size = "xl"
+		),
+
+"""
+layout of the intro modal window (data sources)
+"""
+modal_data_sources = dbc.Modal(
+			  [
+				dbc.ModalHeader(config.data_sources_header),
+				dbc.ModalBody(dcc.Markdown(config.data_sources_text)),
+				dbc.ModalFooter([
+					dbc.Spinner(dbc.Button("Close", id="close_data_sources", n_clicks=0)),
+				]),
+			],
+			id="modal_data_sources",
 			is_open=True,
 			size = "xl"
 		),
@@ -200,8 +236,14 @@ pie_col = dbc.Col([
 					html.Div([
 								dbc.Spinner([
 									dbc.Card(children = [
-															html.H5("Display results by selecting WW plant from the menu or the catchment area in the map."),
-														], id = "stacked_div"),
+															dcc.Markdown("""
+															**🛈 Use instructions:**
+															+ Click in the catchment area in the map or select wastewater treatment plant from the menu to display variant composition across all sampling time points.
+															+ Click in the barplot representing the variant composition to select a sampling time point. This will display a genome map depicting detected mutations and their respective frequency in the sample.
+															+ To display frequency of a mutation of interest, change the 'Filter by' menu in the right-hand panel to 'Mutation'. Then select a genome feature where is this mutation located and select the mutation from the drop-down menu.
+															+ To use the timelapse feature, select the 'Timelapse' option from the drop-down menu 'Show...'.
+															"""
+															)														], id = "stacked_div"),
 								]),
 								
 								dbc.Collapse([
@@ -240,6 +282,8 @@ dash_app.layout = html.Div(
 		dcc.Store(id = "all_ww"),
 		dcc.Location(id="url"),
 		html.Div(modal),
+		html.Div(modal_authors),
+		html.Div(modal_data_sources),
 		html.Div(bigwin_modal),
 		
 		# Navbar style
@@ -253,7 +297,8 @@ dash_app.layout = html.Div(
 				dbc.DropdownMenu(
 								children=[
 									dbc.DropdownMenuItem(dbc.Button("Synopsis", id="open", n_clicks=0)),
-
+									dbc.DropdownMenuItem(dbc.Button("Data sources", id="open_data_sources", n_clicks=1)),
+									dbc.DropdownMenuItem(dbc.Button("Authors", id="open_authors", n_clicks=1)),
 								],
 								nav=True,
 								in_navbar=True,
@@ -521,6 +566,7 @@ def update_map(show, variant, plant, mutation, data,static_dynamic, radioitems, 
 		lon = config.lon
 		zoom = config.zoom
 		
+		
 		if plant!= "all":
 			lat = plants_names_dict[plant]["dcpLatitude"]
 			lon = plants_names_dict[plant]["dcpLongitude"]
@@ -532,6 +578,11 @@ def update_map(show, variant, plant, mutation, data,static_dynamic, radioitems, 
 			ww_recent_major = pd.DataFrame()
 			for index, data in df.groupby(by="LocationID"):
 				max_date = data.sample_date.max()
+				min_date = data.sample_date.min()
+				
+				max_date_label = str(max_date).split("T")[0]
+				min_date_label = str(min_date).split("T")[0]
+				
 				data = data[data["sample_date"]==max_date]
 				data = data.sort_values(by="value", ascending = False)
 				ww_recent_major = pd.concat([ww_recent_major, data.head(1)])
@@ -558,7 +609,7 @@ def update_map(show, variant, plant, mutation, data,static_dynamic, radioitems, 
 					center={"lat":lat, "lon": lon},
 					zoom = zoom,
 					height=900,
-					title = "Recent distribution of the most frequent variants"
+					title = "Distribution of the most frequent variant between "+min_date_label+" and "+max_date_label+"."
 					)
 			radio_style = {"display":"none"}
 		
@@ -637,7 +688,7 @@ def update_map(show, variant, plant, mutation, data,static_dynamic, radioitems, 
 					center={"lat":lat, "lon": lon},
 					zoom = zoom,
 					height=900,
-					title = "Most recent frequency of the mutation "+mutation,
+					title = "Frequency of the mutation "+mutation+" between "+min_date_label+" and "+max_date_label+".",
 					)
 			fig.update_layout(coloraxis_colorbar=dict(
 					title="frequency",
@@ -708,7 +759,7 @@ def update_map(show, variant, plant, mutation, data,static_dynamic, radioitems, 
 					center={"lat":lat, "lon": lon},
 					zoom = zoom,
 					height=900,
-					title = "Most recent frequency of the variant "+variant,
+					title = "Frequency of the variant "+variant+" between "+min_date_label+" and "+max_date_label+".",
 					)
 			fig.update_layout(coloraxis_colorbar=dict(
 					title="frequency",
@@ -761,7 +812,7 @@ def update_map(show, variant, plant, mutation, data,static_dynamic, radioitems, 
 				center={"lat":lat, "lon": lon},
 				zoom = zoom,
 				height=900,
-				title = "Timelapse distribution of the most frequent variants"
+				title = "Timelapse distribution of the most frequent variants between "+min_date_label+" and "+max_date_label+"."
 			)
 			fig.layout.updatemenus[0].buttons[0].args[1]['frame']['duration'] = 1000
 			fig.layout.updatemenus[0].buttons[0].args[1]['transition']['duration'] = 50
@@ -811,7 +862,7 @@ def update_map(show, variant, plant, mutation, data,static_dynamic, radioitems, 
 				center={"lat":lat, "lon": lon},
 				zoom = zoom,
 				height=900,
-				title = "Timelapse frequency of the variant "+variant
+				title = "Timelapse frequency of the variant "+variant+" between "+min_date_label+" and "+max_date_label+"."
 			)
 			fig.update_layout(coloraxis_colorbar=dict(
 					title="frequency",
@@ -871,7 +922,7 @@ def update_map(show, variant, plant, mutation, data,static_dynamic, radioitems, 
 				center={"lat":lat, "lon": lon},
 				zoom = zoom,
 				height=900,
-				title = "Timelapse frequency of the mutation "+mutation
+				title = "Timelapse frequency of the mutation "+mutation+" between "+min_date_label+" and "+max_date_label+"."
 			)
 			fig.update_layout(coloraxis_colorbar=dict(
 					title="frequency",
@@ -895,7 +946,7 @@ def update_map(show, variant, plant, mutation, data,static_dynamic, radioitems, 
 			return "Selected filters return no results.", "Close", None, {"display":"none"}, None
 
 """
-callback: toggle the modal window 1
+callback: toggle the modal window: synopsis
 """
 @dash_app.callback(
 	Output("modal", "is_open"),
@@ -906,9 +957,37 @@ def toggle_modal(n1, n2, is_open):
 	if n1 or n2:
 		return not is_open
 	return is_open
+	
+"""
+callback: toggle the modal window: authors
+"""
+@dash_app.callback(
+	Output("modal_authors", "is_open"),
+	[Input("open_authors", "n_clicks"), Input("close_authors", "n_clicks")],
+	[State("modal_authors", "is_open")],
+)
+def toggle_modal(n1, n2, is_open):
+	if n1 or n2:
+		return not is_open
+	return is_open
 
 """
-callback: toggle the modal window 2
+callback: toggle the modal window: data sources
+"""
+@dash_app.callback(
+	Output("modal_data_sources", "is_open"),
+	[Input("open_data_sources", "n_clicks"), Input("close_data_sources", "n_clicks")],
+	[State("modal_data_sources", "is_open")],
+)
+def toggle_modal(n1, n2, is_open):
+	if n1 == 1:
+		return False
+	if n1 or n2:
+		return not is_open
+	return is_open
+
+"""
+callback: toggle the modal window: authors
 """
 @dash_app.callback(
 	Output("bigwin_modal", "is_open"),
@@ -916,6 +995,8 @@ callback: toggle the modal window 2
 	[State("bigwin_modal", "is_open")],
 )
 def toggle_modal(n1, n2, is_open):
+	if n1 == 1:
+		return False
 	if n1 or n2:
 		return not is_open
 	return is_open
