@@ -128,7 +128,7 @@ modal_authors = dbc.Modal(
 				]),
 			],
 			id="modal_authors",
-			is_open=True,
+			is_open=False,
 			size = "xl"
 		),
 
@@ -144,7 +144,7 @@ modal_data_sources = dbc.Modal(
 				]),
 			],
 			id="modal_data_sources",
-			is_open=True,
+			is_open=False,
 			size = "xl"
 		),
 
@@ -547,8 +547,11 @@ Input("radioitems","value"),
 State("Fig","data"),
 State("date","end_date"),
 State("all_ww","data"),
+State("date","start_date"),
 )
-def update_map(show, variant, plant, mutation, data,static_dynamic, radioitems, Fig, end_date, all_ww):
+def update_map(show, variant, plant, mutation, data,static_dynamic, radioitems, Fig, end_date, all_ww, start_date):
+	max_date_label = str(end_date).split("T")[0]
+	min_date_label = str(start_date).split("T")[0]
 	try:
 		df_full = pd.DataFrame.from_dict(data)
 		sampled_locations = list(df_full["LocationID"].unique())
@@ -580,8 +583,7 @@ def update_map(show, variant, plant, mutation, data,static_dynamic, radioitems, 
 				max_date = data.sample_date.max()
 				min_date = data.sample_date.min()
 				
-				max_date_label = str(max_date).split("T")[0]
-				min_date_label = str(min_date).split("T")[0]
+				
 				
 				data = data[data["sample_date"]==max_date]
 				data = data.sort_values(by="value", ascending = False)
@@ -967,6 +969,8 @@ callback: toggle the modal window: authors
 	[State("modal_authors", "is_open")],
 )
 def toggle_modal(n1, n2, is_open):
+	if n1 == 1:
+		return False
 	if n1 or n2:
 		return not is_open
 	return is_open
@@ -987,7 +991,7 @@ def toggle_modal(n1, n2, is_open):
 	return is_open
 
 """
-callback: toggle the modal window: authors
+callback: toggle the modal window: big window
 """
 @dash_app.callback(
 	Output("bigwin_modal", "is_open"),
