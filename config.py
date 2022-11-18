@@ -32,7 +32,7 @@ Markup styled string with information displayed under Author information
 """
 authors_text = """
 This software was produced by Petr Triska, Fabian Amman, Lukas Endler and Andreas Bergthaler.
-For questions regarding the publication, please contact prof. Andreas Bergthaler (andreas.bergthaler{at}meduniwien.ac.at)
+For questions regarding the publication, please contact Prof. Andreas Bergthaler (andreas.bergthaler{at}meduniwien.ac.at).
 For questions regarding the code, please contact Petr Triska (triskapet@gmail.com).
 
 """ # string
